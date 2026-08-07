@@ -1,22 +1,51 @@
-# EstateX — Tokenized Real Estate NFT Marketplace
+# EstateX — Tokenized Real Estate Protocol
 
 [![Ethereum Sepolia](https://img.shields.io/badge/Network-Ethereum_Sepolia-blue)](https://sepolia.etherscan.io)
-[![Solidity](https://img.shields.io/badge/Solidity-0.8.20-lightgrey)](https://soliditylang.org/)
+[![Solidity](https://img.shields.io/badge/Solidity-0.8.24-lightgrey)](https://soliditylang.org/)
 [![Next.js](https://img.shields.io/badge/Next.js-14-black)](https://nextjs.org/)
 [![IPFS](https://img.shields.io/badge/Storage-Pinata_IPFS-teal)](https://pinata.cloud)
 
-EstateX is a decentralized Web3 real estate marketplace where property owners can mint physical and digital properties as ERC-721 NFTs, list them for sale in ETH, purchase property NFTs with automatic ownership transfer, cancel active listings, and resell owned real estate.
+EstateX is a decentralized Web3 real estate platform where property deeds are tokenized as ERC-721 NFTs. The protocol supports fixed-price listings, interactive timed bidding auctions, and a rental income system where landlords can lease out properties on a daily basis.
 
 ---
 
-## 🌟 Key Features
+## 🌟 Core Protocol Features
 
-- 🏠 **ERC-721 Property Minting:** Mint unique property NFTs with metadata stored on IPFS.
-- 🏷️ **Marketplace Listings:** List owned properties with ETH selling prices.
-- 🛒 **Decentralized Purchasing:** Safe payment handling with automatic NFT transfer.
-- 🔄 **Reselling & Cancellation:** Resell purchased properties or cancel active listings.
-- 📊 **User Dashboard:** Dedicated tabbed view for Owned, Listed, Purchased, and Sold properties.
-- 💼 **Wallet Integration:** MetaMask connection with network detection (Sepolia).
+### 1. 🏠 ERC-721 Property Minting & Verification
+- Mint unique property NFTs with metadata and property images stored on IPFS.
+- Platform admin can officially verify property deeds on-chain (`setPropertyVerification`).
+- Standard **ERC-2981** creator royalties (default 1%) configured to execute on secondary sales.
+
+### 2. 🏷️ Fixed-Price Sales & Reselling
+- Sellers list property NFTs for a fixed price in ETH.
+- Ability to update listing price (`updateListingPrice`) without needing to cancel and re-list.
+- Automated 2.5% platform fee collection.
+- Quick reselling interface for new property owners.
+
+### 3. 🔨 Timed Auctions & Bidding System
+- Sellers can launch timed auctions specifying a reserve price and duration.
+- Bidders place active bids in ETH (minimum 5% increase required over the previous bid).
+- Outbid users can withdraw their bid refunds safely (`withdrawBidRefund`).
+- Finalizing the auction automatically pays out the seller and transfers NFT ownership to the winner.
+
+### 4. 🔑 Real Estate Rental Income System
+- Landlords can list properties for lease specifying the daily rental rate in ETH.
+- Tenants rent properties for a customized duration of days.
+- Payouts are distributed automatically to landlords (97.5%) and the platform fee pool (2.5%) upon reservation.
+
+### 5. 🛡️ Protocol Security & Admin controls
+- Emergency pause circuit breaker (`pauseMarketplace` / `unpauseMarketplace`).
+- Non-reentrant modifiers on all financial payout states to prevent reentrancy attacks.
+- Tracked total volume statistics (`totalVolume`) across sales, auctions, and rentals.
+
+---
+
+## 🌐 Deployed Smart Contract Addresses (Sepolia Testnet)
+
+| Contract | Address | Verified Explorer Code Link |
+|---|---|---|
+| **EstateXNFT** | `0x242C060dBaC5E3ae04Ef37EF0959Fd35e272c3Ba` | [Etherscan Sepolia](https://sepolia.etherscan.io/address/0x242C060dBaC5E3ae04Ef37EF0959Fd35e272c3Ba#code) |
+| **EstateXMarketplace** | `0xc8B92A13422659fF895bdc329b2E451c639AE378` | [Etherscan Sepolia](https://sepolia.etherscan.io/address/0xc8B92A13422659fF895bdc329b2E451c639AE378#code) |
 
 ---
 
@@ -24,42 +53,41 @@ EstateX is a decentralized Web3 real estate marketplace where property owners ca
 
 ```
 EstateX/
-├── smart-contracts/        # Hardhat project, Solidity contracts, & tests
+├── smart-contracts/        # Hardhat development module
 │   ├── contracts/          # EstateXNFT.sol & EstateXMarketplace.sol
-│   ├── scripts/            # Deployment & verification scripts
-│   ├── test/               # Hardhat test suite
+│   ├── scripts/            # Deployment, verification & service checks
+│   ├── test/               # Automated unit tests (100% passing)
 │   └── hardhat.config.js
-├── frontend/               # Next.js Web3 application
-│   ├── app/                # App router pages (Mint, Marketplace, Dashboard, NFT Detail)
-│   ├── components/         # Reusable UI components
-│   ├── utils/              # Contract & wallet utility functions
-│   └── constants/          # ABIs & contract addresses
-├── .env.example            # Environment variables template
+├── frontend/               # Next.js 14 Web3 application
+│   ├── app/                # Mint, Browse, Dashboard & Detail pages
+│   ├── components/         # Reusable Web3 UI elements
+│   ├── utils/              # Contract connectors & MetaMask hook wrapper
+│   └── constants/          # Decoupled ABI & Address configurations
+├── .env.example            # Credentials setup template
 └── README.md
 ```
 
 ---
 
-## 🚀 Quick Start & Installation
+## 🚀 Local Installation & Tests
 
 ### Prerequisites
 - Node.js (v18+)
 - MetaMask extension
 - Sepolia Testnet ETH
 
-### 1. Smart Contracts Setup
+### 1. Hardhat Setup & Tests
 ```bash
 cd smart-contracts
 npm install
 npx hardhat test
 ```
 
-### 2. Frontend Setup
+### 2. Local Contract Deployment
 ```bash
-cd frontend
-npm install
-npm run dev
+npx hardhat run scripts/deploy.js
 ```
+*This deploys contracts on local network and auto-exports ABI and Address files to the frontend module.*
 
 ---
 
