@@ -21,13 +21,33 @@ The protocol consists of two primary smart contracts working in tandem:
                   └──────────────────────┘
 ```
 
+### 🗺️ Protocol Flow & Fee Distribution Diagram
+
+```mermaid
+graph TD
+    A[Buyer / Tenant / Bidder] -->|Pays ETH| B(EstateXMarketplace Contract)
+    
+    B -->|Deducts 2.5% Platform Fee| C[Marketplace Owner Wallet]
+    
+    subgraph Fixed-Sale & Auction payouts
+        B -->|Deducts 1.0% Creator Royalty| D[Original NFT Minter Wallet]
+        B -->|Deducts remaining 96.5%| E[Property Seller Wallet]
+    end
+    
+    subgraph Rental Payouts
+        B -->|Deducts remaining 97.5%| F[Landlord Wallet]
+    end
+```
+
+---
+
 ### 1. [`EstateXNFT.sol`](contracts/EstateXNFT.sol)
 An ERC-721 token contract representing property deeds.
 *   **IPFS Metadata Linkage:** Inherits OpenZeppelin's `ERC721URIStorage` to link each token to an immutable JSON metadata file (describing coordinates, features, size, and images) hosted on IPFS.
 *   **ERC-2981 Royalties:** Implements standard Web3 royalties. By default, the creator receives a **1% royalty** on any secondary marketplace transaction.
 *   **On-Chain Verification:** Trusted platform administrators can toggle the property verification badge status (`setPropertyVerification`), signaling to buyers that physical property titles have been legally vetted.
 
-### 2. [`EstateXMarketplace.sol`](contracts/EstateXMarketplace.sol)
+### 2. [`EstateXMarketplace.sol`](contracts/contracts/EstateXMarketplace.sol)
 The core business logic contract facilitating decentralized real estate commerce. It operates under a **ReentrancyGuard** for financial security and contains an emergency pause switch (**Pausable**) controlled by the platform owner.
 
 ---
