@@ -1,6 +1,6 @@
 {
-  "network": "hardhat",
-  "chainId": 31337,
-  "nftContract": "0x5FbDB2315678afecb367f032d93F642f64180aa3",
-  "marketplaceContract": "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512"
+  "network": "sepolia",
+  "chainId": 11155111,
+  "nftContract": "0x242C060dBaC5E3ae04Ef37EF0959Fd35e272c3Ba",
+  "marketplaceContract": "0xc8B92A13422659fF895bdc329b2E451c639AE378"
 }
