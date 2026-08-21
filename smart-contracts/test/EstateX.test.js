@@ -46,12 +46,29 @@ describe("EstateX All-in-One Real Estate Protocol", function () {
     });
 
     it("Should list, buy, and distribute 2.5% platform fee", async function () {
+      const sellerBalBefore = await ethers.provider.getBalance(seller.address);
+      const ownerBalBefore = await ethers.provider.getBalance(owner.address);
+
       await marketplaceContract.connect(seller).listProperty(await nftContract.getAddress(), 1, listingPrice);
-      await marketplaceContract.connect(buyer).buyProperty(1, { value: listingPrice });
+      
+      const tx = await marketplaceContract.connect(buyer).buyProperty(1, { value: listingPrice });
+      const receipt = await tx.wait();
 
       expect(await nftContract.ownerOf(1)).to.equal(buyer.address);
       const listing = await marketplaceContract.getListing(1);
       expect(listing.status).to.equal(1); // Sold
+
+      const sellerBalAfter = await ethers.provider.getBalance(seller.address);
+      const ownerBalAfter = await ethers.provider.getBalance(owner.address);
+
+      // Payout is price minus platform fee (2.5%) and royalty (1% to owner)
+      const platformFee = (listingPrice * 250n) / 10000n;
+      const royaltyFee = (listingPrice * 100n) / 10000n;
+      const expectedPayout = listingPrice - platformFee - royaltyFee;
+
+      // Seller paid gas for listing, so balance change is expectedPayout - gas
+      expect(sellerBalAfter).to.be.greaterThan(sellerBalBefore);
+      expect(ownerBalAfter - ownerBalBefore).to.equal(platformFee + royaltyFee);
     });
   });
 
