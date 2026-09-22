@@ -53,10 +53,14 @@ EstateX is a decentralized Web3 real estate platform where property deeds are to
 
 ```
 EstateX/
-├── smart-contracts/        # Hardhat development module
+├── smart-contracts/        # Hardhat & Foundry development module
 │   ├── contracts/          # EstateXNFT.sol & EstateXMarketplace.sol
 │   ├── scripts/            # Deployment, verification & service checks
-│   ├── test/               # Automated unit tests (100% passing)
+│   ├── test/               # Dual test suites (Hardhat & Foundry)
+│   │   ├── EstateX.test.js # Hardhat Chai/Ethers.js tests
+│   │   └── EstateX.t.sol   # Foundry Solidity unit tests
+│   ├── foundry.toml        # Foundry configuration
+│   ├── remappings.txt      # Dependency remappings
 │   └── hardhat.config.js
 ├── frontend/               # Next.js 14 Web3 application
 │   ├── app/                # Mint, Browse, Dashboard & Detail pages
@@ -73,17 +77,29 @@ EstateX/
 
 ### Prerequisites
 - Node.js (v18+)
+- Foundry (`forge` CLI) or WSL Ubuntu
 - MetaMask extension
 - Sepolia Testnet ETH
 
-### 1. Hardhat Setup & Tests
+### 1. Run Tests with Foundry (Recommended for Speed & Tracing)
+```bash
+cd smart-contracts
+forge test -vvv
+```
+
+To run gas analysis:
+```bash
+forge test --gas-report
+```
+
+### 2. Run Tests with Hardhat
 ```bash
 cd smart-contracts
 npm install
 npx hardhat test
 ```
 
-### 2. Local Contract Deployment
+### 3. Local Contract Deployment
 ```bash
 npx hardhat run scripts/deploy.js
 ```

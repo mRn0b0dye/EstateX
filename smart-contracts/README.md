@@ -97,7 +97,7 @@ Here is exactly how the fees and payouts are distributed for each of the three t
 ---
 
 ## 🛠️ Public Functions Reference Table
-
+ 
 | Function Signature | Role | Payable? | Who Can Call? |
 |---|---|---|---|
 | `mintProperty(string uri)` | Mints a property deed NFT | No | Anyone |
@@ -110,3 +110,36 @@ Here is exactly how the fees and payouts are distributed for each of the three t
 | `listPropertyForRent(address contract, uint256 id, uint256 dailyPrice)` | Lists property for daily lease | No | NFT Owner |
 | `rentProperty(uint256 rentId, uint256 days)` | Rents property for $N$ days | **Yes** | Anyone |
 | `setPropertyVerification(uint256 id, bool status)` | Verifies/Vets a property deed | No | Protocol Admin |
+
+---
+
+## 🧪 Comprehensive Testing Suite
+
+EstateX features dual test coverage with both **Foundry** (native Solidity unit tests) and **Hardhat** (JavaScript Ethers.js integration tests).
+
+### 1. Running Foundry Tests (`test/EstateX.t.sol`)
+Foundry executes lightning-fast native Solidity tests with cheatcodes (`vm.warp`, `vm.prank`, `vm.deal`, `vm.expectRevert`):
+
+```bash
+# Run all Foundry tests
+forge test
+
+# Run with verbose trace logs
+forge test -vvv
+
+# Generate gas consumption report
+forge test --gas-report
+```
+
+#### Test Coverage Categories:
+- **NFT Minting & Royalties:** Validates IPFS metadata URIs, creator tracking, token ID increment, empty URI reverts, and ERC-2981 royalty calculations.
+- **Fixed-Price Trading:** Validates listing, buyout balance changes, 2.5% platform fee + 1% creator royalty distribution, price updates, and cancellations.
+- **Timed Auctions & Bidding:** Validates auction creation, outbidding, automatic escrowed refund balances, `claimBidRefund`, fast-forwarded timestamp auction settlement, and early closing reverts.
+- **Daily Property Rentals:** Validates daily rate listing, multi-day lease payments, 97.5% landlord payout, and rental expiration tracking.
+- **Access Control & Pausability:** Validates platform fee adjustment by owner, unauthorized caller reverts, and emergency pause/unpause execution.
+
+### 2. Running Hardhat Tests (`test/EstateX.test.js`)
+```bash
+npx hardhat test
+```
+
